@@ -7,21 +7,25 @@ const {isTokenIncluded, getAccessTokenFromHeader} = require("../../helpers/autho
 
 
 const getAccessToRoute = (req, res, next) => {
-    console.log("Get Access to Route " + JWT_SECRET_KEY);
+    
     if(!isTokenIncluded(req))
     {
         return next(
             new CustomError("You are not authorized to access this route.",401)
         )
     }
-    const { JWT_SECRET_KEY } = process.env;
+    
     const accessToken = getAccessTokenFromHeader(req);
-
-    jwt.verify(accessToken, process.env.JWT_SECRET_KEY, (err, decoded) =>{
+    const { JWT_SECRET_KEY } = process.env;
+    console.log("Get Access to Route " + JWT_SECRET_KEY);
+    jwt.verify(accessToken, JWT_SECRET_KEY, (err, decoded) =>{
         if (err) {
-            return next(err);
+            return new CustomError("You are not authorized to access this route.", 401);
         }
-        console.log(decoded);
+        req.user = {
+            id : decoded.id,
+            name: decoded.name
+        }
         next();
     })
 

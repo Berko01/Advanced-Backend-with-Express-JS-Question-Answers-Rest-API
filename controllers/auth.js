@@ -22,8 +22,11 @@ const register = asyncErrorWrapper(async (req, res, next) => {
 const getUser = (req, res, next) => {
   res.json({
     success: true,
-    data: req.user.id,
-    name: req.user.name
+    message: "welcome",
+    data: {
+      id: req.user.id,
+      name: req.user.name
+    },
   });
 };
 
