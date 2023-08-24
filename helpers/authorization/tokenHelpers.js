@@ -23,6 +23,12 @@ const sendJwtToClient = (user,res) =>{
 };
 
 const isTokenIncluded = (req) => {
+    
+    if(req.headers.authorization == "Bearer: none")
+    {
+        console.log(false);
+        return false;
+    }
     return (
         req.headers.authorization && req.headers.authorization.startsWith('Bearer:')
     );
