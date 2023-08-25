@@ -2,6 +2,7 @@ const Question = require("../models/Question");
 const asyncErrorWrapper = require("express-async-handler");
 const CustomError = require("../helpers/error/CustomError");
 
+
 const askNewQuestion = asyncErrorWrapper(async (req, res, next) => {
   const information = req.body;
 
