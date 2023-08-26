@@ -3,11 +3,11 @@ const {
   searchHelper,
   populateHelper,
   paginationHelper,
-  questionSortHelper
+  questionSortHelper,
 } = require("./queryMiddlewareHelpers");
 
 const questionQueryMiddleware = function (model, options) {
-  return async function (req, res, next) {
+  return asyncErrorWrapper(async function (req, res, next) {
     //Initial Query
     let query = model.find();
     //Search
@@ -34,7 +34,7 @@ const questionQueryMiddleware = function (model, options) {
       data: queryResults,
     };
     next();
-  };
+  });
 };
 
 module.exports = questionQueryMiddleware;
