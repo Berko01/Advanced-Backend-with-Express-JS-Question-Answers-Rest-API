@@ -18,6 +18,7 @@ const {
   checkQuestionExist,
 } = require("../middlewares/database/databaseErrorHelpers");
 const questionQueryMiddleware = require("../middlewares/query/questionQueryMiddleware");
+const answerQueryMiddleware = require("../middlewares/query/answerQueryMiddleware");
 // api/questions
 const router = express.Router();
 
@@ -31,7 +32,23 @@ router.get(
   }),
   getAllQuestions
 );
-router.get("/:id", checkQuestionExist, getSingleQuestion);
+router.get(
+  "/:id",
+  checkQuestionExist,
+  answerQueryMiddleware(Question,{
+    population : [
+      {
+        path: "user",
+        select :"name profile_image"
+      },
+      {
+        path: "answers",
+        select: "content"
+      }
+    ]
+  }),
+  getSingleQuestion
+);
 router.post("/ask", getAccessToRoute, askNewQuestion);
 router.put(
   "/:id/edit",
