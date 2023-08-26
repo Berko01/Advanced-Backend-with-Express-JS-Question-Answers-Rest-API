@@ -87,8 +87,8 @@ const deleteAnswer = asyncErrorWrapper(async (req, res, next) => {
       updatedAnswers.push(answerId);
     }
   }
-
   question.answers = updatedAnswers;
+  question.answerCount = question.answers.length;
   await question.save();
 
   return res.status(200).json({

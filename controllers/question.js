@@ -2,7 +2,6 @@ const Question = require("../models/Question");
 const asyncErrorWrapper = require("express-async-handler");
 const CustomError = require("../helpers/error/CustomError");
 
-
 const askNewQuestion = asyncErrorWrapper(async (req, res, next) => {
   const information = req.body;
 
@@ -18,12 +17,9 @@ const askNewQuestion = asyncErrorWrapper(async (req, res, next) => {
 });
 
 const getAllQuestions = asyncErrorWrapper(async (req, res, next) => {
-  const questions = await Question.find();
 
-  return res.status(200).json({
-    success: true,
-    data: questions,
-  });
+
+  return res.status(200).json(res.queryResults);
 });
 
 const getSingleQuestion = asyncErrorWrapper(async (req, res, next) => {
@@ -74,6 +70,8 @@ const likeQuestion = asyncErrorWrapper(async (req, res, next) => {
 
   question.likes.push(req.user.id);
 
+  question.likeCount = question.likes.length;
+
   await question.save();
   return res.status(200).json({
     success: true,
@@ -81,14 +79,15 @@ const likeQuestion = asyncErrorWrapper(async (req, res, next) => {
   });
 });
 
-
 const undoLikeQuestion = asyncErrorWrapper(async (req, res, next) => {
   const { id } = req.params;
 
   let question = await Question.findById(id);
 
   if (!question.likes.includes(req.user.id)) {
-    return next(new CustomError("You can not undo like operation for this question",400))
+    return next(
+      new CustomError("You can not undo like operation for this question", 400)
+    );
   }
 
   const updatedLikes = [];
@@ -98,7 +97,8 @@ const undoLikeQuestion = asyncErrorWrapper(async (req, res, next) => {
     }
   }
   question.likes = updatedLikes;
-  
+
+  question.likeCount = question.likes.length;
 
   await question.save();
   return res.status(200).json({
